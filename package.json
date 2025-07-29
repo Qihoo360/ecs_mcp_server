@@ -1,0 +1,60 @@
+{
+  "name": "@aicloud360/mcp-server-disk",
+  "version": "0.5.1",
+  "main": "build/index.js",
+  "type": "module",
+  "bin": {
+    "mcp-server-disk": "build/index.js"
+  },
+  "scripts": {
+    "start": "echo \"start\" && node build/index.js --sse",
+    "clean": "rm -rf build",
+    "build:ts": "tsc && node -e \"require('fs').chmodSync('build/index.js', '755')\"",
+    "build": "rollup -c && node scripts/postbuild.js",
+    "build:dev": "rollup -c --environment NODE_ENV:development && node scripts/postbuild.js",
+    "build:prod": "rollup -c --environment NODE_ENV:production && node scripts/postbuild.js",
+    "watch": "rollup -c -w",
+    "prepublishOnly": "npm run build:prod"
+  },
+  "files": [
+    "build"
+  ],
+  "keywords": [
+    "mcp",
+    "modelcontextprotocol",
+    "ecs",
+    "uploader",
+    "cloud storage",
+    "360",
+    "file manager"
+  ],
+  "author": "@aicloud360",
+  "license": "Apache-2.0",
+  "description": "360 AI 云盘 MCP",
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "@types/node": "^22.10.0",
+    "@types/uuid": "^9.0.8",
+    "rollup": "^4.12.0",
+    "rollup-plugin-delete": "^2.0.0",
+    "tslib": "^2.8.1",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "@aicloud360/sec-sdk-node": "^0.1.2",
+    "@modelcontextprotocol/sdk": "^1.15.0",
+    "@types/cors": "^2.8.18",
+    "@types/express": "^5.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "uuid": "^9.0.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
