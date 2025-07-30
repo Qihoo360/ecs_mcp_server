@@ -2,14 +2,32 @@
 
 360 AI 云盘的 Model Context Protocol 接入服务，让 AI 模型能够通过 MCP 协议直接操作云盘，提供完整的云盘文件管理能力。
 
-<div align="center">
-</div>
-
 ## 📚 简介
 
 本项目为 360 AI 云盘的 MCP（Model Context Protocol）服务实现，允许各类 AI 模型（如大语言模型）通过标准的 MCP 协议与 360 AI 云盘进行交互。通过这种方式，AI 模型可以帮助用户管理云盘文件，极大地提升了文件管理的智能化和便捷性。
 
 ## 🔧 配置方式（在 Cursor 中配置）
+
+###  Stdio 接入方式
+
+在 `~/.cursor/mcp.json` 文件中添加以下配置，连接 360 AI 云盘 MCP 服务：
+
+```json
+{
+  "mcpServers": {
+    "360-mcp-server-disk": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@aicloud360/mcp-server-disk"
+      ],
+      "env": {
+        "API_KEY": "_xxxxxxxxx"
+      }
+    }
+  }
+}
+```
 
 ### Streamable HTTP 接入方式
 
@@ -38,7 +56,7 @@ Streamable HTTP接入方式的特点：
 ```json
 {
   "mcpServers": {
-    "mcp-server-disk-http": {
+    "mcp-server-disk-sse": {
       "url": "https://mcp.yunpan.com/sse?api_key=_xxxxxxxxx"
     }
   }
@@ -77,6 +95,8 @@ SSE接入方式的特点：
 
 - 📁 文件列表浏览 - 查看云盘目录内容
 - 🔍 文件搜索 - 根据关键词搜索云盘文件
+- ⬆️ 文件上传 - 将文件上传至 360 云盘
+- ⬇️ 文件下载 - 获取云盘文件下载链接并支持直接下载
 - 🎬 视频下载 - 通过URL下载视频到云盘，支持批量下载和实时进度监控
 - 💾 文件保存 - 通过URL或文本内容保存文件到云盘
 - 📂 目录创建 - 在云盘中创建新文件夹
@@ -88,6 +108,56 @@ SSE接入方式的特点：
 ## 🛠️ 工具使用指南
 
 当连接到 360 AI 云盘 MCP 服务后，可以使用以下工具与云盘交互：
+
+### 文件上传 (file-upload-stdio) - 仅支持Stdio接入方式
+
+将本地文件上传到 360 AI云盘指定路径。
+
+**参数：**
+- `filePaths`: 本地文件的完整路径（必填，可以是字符串数组包含多个文件）
+- `uploadPath`: 上传到云盘的目标目录，默认为根目录 `/`
+
+**示例：**
+```json
+{
+  "filePaths": ["/Users/username/Documents/报告.docx", "/Users/username/Documents/数据.xlsx"],
+  "uploadPath": "/工作文件"
+}
+```
+
+**单文件上传示例：**
+```json
+{
+  "filePaths": "/Users/username/Desktop/测试文档.pdf",
+  "uploadPath": "/文档"
+}
+```
+
+### 文件下载 (file-download-stdio) - 仅支持Stdio接入方式
+
+获取云盘中指定文件的下载链接并支持直接下载文件。
+
+**参数：**
+- `nid`: 文件的唯一标识ID，可通过文件列表或搜索获取（必填）
+- `auto`: 是否直接下载文件，默认为true
+- `downloadDir`: 指定下载目录，必须有读写权限，默认为用户主目录下的.mcp-downloads文件夹
+
+**仅获取下载链接示例：**
+```json
+{
+  "nid": "12345678",
+  "auto": false
+}
+```
+
+**下载到指定目录示例：**
+```json
+{
+  "nid": "12345678",
+  "auto": true,
+  "downloadDir": "/Users/username/Downloads"
+}
+```
 
 ### 文件列表查询 (file-list)
 
@@ -262,8 +332,10 @@ SSE接入方式的特点：
 - **自动文件备份**：根据用户习惯，提供智能备份建议
 - **文件内容分析**：分析文档内容并提供摘要或见解
 - **基于对话的文件操作**：用户可以通过对话方式管理云盘文件
+- **文件上传及分享**：用户可以通过对话方式保存文件到云盘，并生成文件分享链接，方便把文件分享给他人
 - **网络资源保存**：用户可以通过提供URL，让AI帮助将网络资源保存到云盘
 - **文件内容创建与保存**：AI可以根据用户需求创建文档内容，并直接保存到云盘
+- **云盘文件下载**：用户可以通过对话方式从云盘下载文件到本地
 - **视频资源下载**：用户可以通过提供视频URL，让AI帮助将视频下载到云盘，支持批量下载和进度监控
 
 ## 🔑 关键词
